@@ -1,92 +1,56 @@
 # nft-status
 
-A proof-of-concept React app that lets you check whether an NFT has been used on [Stake](https://stake.com). Enter a contract address and token ID, and the app queries a backend API to return the NFT's current status.
+A little proof-of-concept app for checking whether an NFT has been used on [Stake](https://stake.amplifyworld.ai). Chuck in a contract address and token ID and it'll tell you if it's been used and when.
 
-This repo was built as an example of how to use the Claude Code API skill — the entire app was scaffolded from a single skill file. It's intended to be a useful reference for anyone learning how to build with the skill system.
+This was built as a demo of what Claude Code's skill system can do — the whole thing was generated from a single skill file, then tidied up into something shareable.
 
 ## What it does
 
-- Accepts an ERC-721 contract address and a token ID
-- Queries a REST API endpoint: `GET /api/nfts/status/:contractAddress/:tokenId`
-- Displays whether the NFT has been used, and if so, when
-- Handles 404 (unknown contract), 429 (rate limit), and network errors gracefully
-- Rate limited to 120 requests per minute (enforced server-side)
+- You type in a contract address + token ID
+- It hits the Stake API and tells you if the NFT has been used
+- If it has, it shows you when
+- Handles errors and rate limiting (120 requests/min) sensibly
 
-## Tech stack
+## Stack
 
-- [React 19](https://react.dev) + [TypeScript](https://www.typescriptlang.org)
-- [Vite](https://vite.dev) for bundling and dev server
-- [Tailwind CSS v4](https://tailwindcss.com) for styling
+React + TypeScript, Vite, Tailwind CSS v4.
 
-## Getting started
+## Running it locally
 
-### Prerequisites
-
-- Node.js 18+
-- A running instance of the NFT status API backend
-
-### Install dependencies
+You'll need Node 18+ and the API backend running somewhere.
 
 ```bash
 npm install
 ```
 
-### Configure the API URL
-
-Copy the example env file and set your backend URL:
+Copy the env file and point it at your backend:
 
 ```bash
 cp .env.example .env.local
 ```
 
-Then edit `.env.local`:
-
 ```env
 VITE_API_BASE_URL=http://localhost:8000
 ```
 
-Vite exposes `VITE_*` variables to the client via `import.meta.env`. The app falls back to `http://localhost:8000` if the variable is not set, which is useful for local development without any config.
-
-### Run in development
+Then:
 
 ```bash
 npm run dev
 ```
 
-### Build for production
-
-```bash
-npm run build
-```
-
-The output goes to `dist/`. Serve it with any static file host (Nginx, Cloudflare Pages, Vercel, etc.) — just make sure your backend URL is set correctly in the environment at build time.
+For a production build, run `npm run build` — output lands in `dist/` and can be hosted anywhere static.
 
 ## API
 
-The app expects the backend to expose:
+The app talks to one endpoint:
 
 ```
 GET /api/nfts/status/:contractAddress/:tokenId
 ```
 
-**Success response (200):**
+Returns `{ status: "used" | "unused", used_at?: string }`.
 
-```json
-{
-  "status": "used" | "unused",
-  "used_at": "2024-01-15T10:30:00Z"  // only present when status is "used"
-}
-```
+## How it was made
 
-**Error responses:**
-
-| Status | Meaning |
-|--------|---------|
-| 404 | Contract address not found |
-| 429 | Rate limit exceeded |
-
-## How this was built
-
-This project was created using a Claude Code skill file — a prompt template that instructs Claude Code to scaffold a complete working app. The skill defined the UI design, component structure, API integration pattern, and error handling all in one shot.
-
-If you're exploring Claude Code's skill system, this repo is a concrete example of what a generated app looks like and how to take it from scaffold to production-ready (e.g. replacing hardcoded config with environment variables).
+This was scaffolded entirely by Claude Code using a skill file — basically a prompt template that describes the whole app. If you're curious about the skill system, this repo is a real working example of what comes out of it.
