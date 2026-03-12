@@ -1,36 +1,34 @@
 # nft-status
 
-A little proof-of-concept app for checking whether an NFT has been used on [Stake](https://stake.amplifyworld.ai). Chuck in a contract address and token ID and it'll tell you if it's been used and when.
-
-This was built as a demo of what Claude Code's skill system can do — the whole thing was generated from a single skill file, then tidied up into something shareable.
+A web app for checking the status of AmplifyWorld NFTs on [Stake](https://stake.amplifyworld.ai). Connect your wallet or enter a Hedera account ID to scan all your NFTs at once, or look up a specific one by serial number.
 
 ## What it does
 
-- You type in a contract address + token ID
-- It hits the Stake API and tells you if the NFT has been used
-- If it has, it shows you when
-- Handles errors and rate limiting (120 requests/min) sensibly
+- **My Wallet** — connect a wallet (EIP-6963 multi-provider: MetaMask, HashPack, etc.) or enter a Hedera account ID manually; scans all NFTs across configured contracts and shows used/unused status with artwork
+- **Check an NFT** — pick a contract from a dropdown and enter a serial number to check a single NFT directly
+- Displays NFT artwork from IPFS; 3D GLB models are rendered with an interactive model viewer
+- Resolves EVM wallet addresses to Hedera account IDs automatically via Mirror Node
 
 ## Stack
 
-React + TypeScript, Vite, Tailwind CSS v4.
+React 19 + TypeScript, Vite, Tailwind CSS v4, `@google/model-viewer`.
 
 ## Running it locally
 
-You'll need Node 18+ and the API backend running somewhere.
+Requires Node 18+ and the NFT status API backend running somewhere.
 
 ```bash
 npm install
-```
-
-Copy the env file and point it at your backend:
-
-```bash
 cp .env.example .env.local
 ```
 
+Edit `.env.local`:
+
 ```env
 VITE_API_BASE_URL=http://localhost:8000
+
+# Optional: Pinata or other dedicated IPFS gateway (no trailing slash)
+VITE_IPFS_GATEWAY=https://your-subdomain.mypinata.cloud
 ```
 
 Then:
@@ -39,18 +37,25 @@ Then:
 npm run dev
 ```
 
-For a production build, run `npm run build` — output lands in `dist/` and can be hosted anywhere static.
+For a production build: `npm run build` — output lands in `dist/`.
+
+## Configuration
+
+NFT contracts are configured in `src/config.ts`. Each entry supports:
+
+- `name` — display name
+- `symbol` — shown instead of name when multiple contracts share the same name
+- `tokenId` — Hedera format (`0.0.XXXXX`)
+- `metadataCid` — optional IPFS CID override; bypasses on-chain metadata and resolves via `VITE_IPFS_GATEWAY`
 
 ## API
 
-The app talks to one endpoint:
+The app calls one status endpoint:
 
 ```
-GET /api/nfts/status/:contractAddress/:tokenId
+GET /api/nfts/status/{tokenId}/{serialNumber}
 ```
 
 Returns `{ status: "used" | "unused", used_at?: string }`.
 
-## How it was made
-
-This was scaffolded entirely by Claude Code using a skill file — basically a prompt template that describes the whole app. If you're curious about the skill system, this repo is a real working example of what comes out of it.
+NFT ownership data comes from the [Hedera Mirror Node](https://mainnet-public.mirrornode.hedera.com) public API — no API key required.
