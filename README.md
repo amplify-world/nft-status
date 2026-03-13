@@ -1,4 +1,4 @@
-# nft-status
+# StakeScan
 
 A web app for checking the status of AmplifyWorld NFTs on [Stake](https://stake.amplifyworld.ai). Connect your wallet or enter a Hedera account ID to scan all your NFTs at once, or look up a specific one by serial number.
 

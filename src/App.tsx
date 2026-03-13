@@ -372,7 +372,7 @@ export default function App() {
             Stake NFT Check
           </div>
           <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-br from-white to-white/50 bg-clip-text text-transparent">
-            NFT Status
+            StakeScan
           </h1>
           <p className="mt-2 text-sm text-white/40">Find out if AmplifyWorld NFTs have been used on Stake</p>
         </div>
