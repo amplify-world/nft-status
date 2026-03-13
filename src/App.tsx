@@ -4,7 +4,7 @@ import "@google/model-viewer";
 import { fetchOwnedNfts, checkNftStatus, resolveEvmToAccountId, fetchNftMetadata, fetchSingleNftMetadataUri, type OwnedNft } from "./api";
 import { NFT_CONTRACTS } from "./config";
 
-declare global {
+declare module "react" {
   namespace JSX {
     interface IntrinsicElements {
       "model-viewer": React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
@@ -22,7 +22,7 @@ declare global {
 // ─── EIP-6963: discover all injected wallet providers ────────────────────────
 
 interface WalletProvider {
-  info: { uuid: string; name: string; icon: string };
+  info: { uuid: string; name: string; icon: string; rdns?: string };
   provider: { request: (args: { method: string; params?: unknown[] }) => Promise<unknown> };
 }
 
