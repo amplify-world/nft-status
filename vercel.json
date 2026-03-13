@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/stakescan/(.*)", "destination": "/stakescan/index.html" },
+    { "source": "/stakescan", "destination": "/stakescan/index.html" }
+  ]
+}
